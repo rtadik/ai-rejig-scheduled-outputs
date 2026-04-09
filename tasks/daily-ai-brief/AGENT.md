@@ -114,23 +114,13 @@ git push
 
 ---
 
-## STEP 7 — Send email via Gmail MCP
+## STEP 7 — Send to Slack via Slack MCP
 
-Use the Gmail MCP tool to send the brief to ruttherick@gmail.com.
-- Subject: `AI Brief — [DATE]`
-- Body: full brief content in plain text
+Use the Slack MCP tools to post the full brief to the **#ai-news** channel.
 
----
-
-## STEP 8 — Send to Telegram
-
-Telegram has a 4096 character limit — split into multiple messages if needed, labelling them "Part 1/N", "Part 2/N" etc.
-
-```bash
-curl -s -X POST "https://api.telegram.org/bot8704746403:AAF8EnhcUcDVhBVEsD-XyvSeC4CUfSkBVn8/sendMessage" \
-  -H "Content-Type: application/json" \
-  -d '{"chat_id": 1306644770, "text": "MESSAGE_CHUNK", "parse_mode": "Markdown"}'
-```
+- First, list channels to find the `#ai-news` channel ID
+- Then post the brief as a message to that channel
+- If the brief exceeds Slack's message length limit, split into multiple messages
 
 ---
 
