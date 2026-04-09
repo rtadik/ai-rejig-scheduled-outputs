@@ -23,7 +23,7 @@ Block results from: reddit.com, x.com, twitter.com
 3. `AI startup funding news [Month YYYY]`
 4. `AI agent tools automation news [Month YYYY]`
 
-For promising results, use WebFetch to get the full article content.
+Use WebFetch on the top 3–4 most promising results only. Do NOT fetch more than 5 URLs total — conserve time for delivery steps.
 
 ---
 
@@ -82,21 +82,13 @@ Full brief format:
 
 ---
 
-## STEP 5 — YouTube content (best effort)
+## STEP 5 — Send to Slack via Slack MCP (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
 
-```bash
-pip install yt-dlp -q 2>/dev/null || true
-```
+Use the Slack MCP tools to post the full brief to the **#ai-news** channel.
 
-Search using WebSearch: `site:youtube.com AI news [Month YYYY]`
-
-For promising video URLs, attempt to fetch captions:
-```bash
-cd /tmp && yt-dlp --write-auto-sub --sub-lang en --skip-download \
-  --convert-subs srt -o "%(id)s" "VIDEO_URL" 2>/dev/null
-```
-
-Parse SRTs: strip line numbers, timestamps, `[Music]` tags; deduplicate consecutive lines; take first 3000 chars. Incorporate into brief if story scores 7+. Skip this step entirely if yt-dlp fails.
+- First, list channels to find the `#ai-news` channel ID
+- Then post the brief as a message to that channel
+- If the brief exceeds Slack's message length limit, split into multiple messages
 
 ---
 
@@ -114,13 +106,21 @@ git push
 
 ---
 
-## STEP 7 — Send to Slack via Slack MCP
+## STEP 7 — YouTube enrichment (optional, best effort, skip if low on time)
 
-Use the Slack MCP tools to post the full brief to the **#ai-news** channel.
+```bash
+pip install yt-dlp -q 2>/dev/null || true
+```
 
-- First, list channels to find the `#ai-news` channel ID
-- Then post the brief as a message to that channel
-- If the brief exceeds Slack's message length limit, split into multiple messages
+Search using WebSearch: `site:youtube.com AI news [Month YYYY]`
+
+For promising video URLs, attempt to fetch captions:
+```bash
+cd /tmp && yt-dlp --write-auto-sub --sub-lang en --skip-download \
+  --convert-subs srt -o "%(id)s" "VIDEO_URL" 2>/dev/null
+```
+
+Parse SRTs: strip line numbers, timestamps, `[Music]` tags; deduplicate consecutive lines; take first 3000 chars. If any score 7+, append to the brief and update the saved file. Skip entirely if yt-dlp fails or time is limited.
 
 ---
 
