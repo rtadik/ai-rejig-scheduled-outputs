@@ -82,13 +82,16 @@ Full brief format:
 
 ---
 
-## STEP 5 — Send to Slack via Slack MCP (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
+## STEP 5 — Send to Slack via Slack connector (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
 
-Use the Slack MCP tools to post the full brief to the **#ai-news** channel.
+Use the Slack connector tools (mcp__claude_ai_Slack__*) to deliver the brief to **#ai-news**.
 
-- First, list channels to find the `#ai-news` channel ID
-- Then post the brief as a message to that channel
-- If the brief exceeds Slack's message length limit, split into multiple messages
+1. Use `slack_search_channels` to find the `#ai-news` channel ID
+2. Create a Slack Canvas with `slack_create_canvas` containing the full brief (title: "AI Daily Brief — YYYY-MM-DD")
+3. Post a short summary message to the channel with `slack_send_message` that includes:
+   - Today's date
+   - Count of stories and top 2–3 headline titles
+   - The Canvas link so RT can read the full brief in a clean format
 
 ---
 
