@@ -82,20 +82,37 @@ Full brief format:
 
 ---
 
-## STEP 5 — Send to Slack via Slack connector (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
+## STEP 5 — Send to Slack (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
 
-Use the Slack MCP connector to deliver the brief to **#ai-news**.
+Post the brief to the **#ai-news** Slack channel using the Slack API via curl.
 
-First, discover the available Slack tools using ToolSearch (search for "slack"). The tools may be named `mcp__Slack__slack_*` or `mcp__claude_ai_Slack__slack_*` depending on the environment. Load them before calling.
+Channel ID: `C0ASR9CQCBA`
+The bot token is provided via the `SLACK_BOT_TOKEN` environment variable (set in the trigger prompt).
 
-1. Use the `slack_search_channels` tool to find the `#ai-news` channel ID
-2. Create a Slack Canvas with `slack_create_canvas` containing the full brief (title: "AI Daily Brief — YYYY-MM-DD")
-3. Post a short summary message to the channel with `slack_send_message` that includes:
-   - Today's date
-   - Count of stories and top 2–3 headline titles
-   - The Canvas link so RT can read the full brief in a clean format
+### 5a — Upload the full brief as a file
 
-If Slack tools are not available, log the error and continue to the next step.
+```bash
+curl -s -X POST https://slack.com/api/files.upload \
+  -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+  -F "channels=C0ASR9CQCBA" \
+  -F "title=AI Daily Brief — YYYY-MM-DD" \
+  -F "filename=ai-brief-YYYY-MM-DD.md" \
+  -F "content=$(cat outputs/briefs/YYYY-MM-DD.md)"
+```
+
+### 5b — Post a summary message
+
+```bash
+curl -s -X POST https://slack.com/api/chat.postMessage \
+  -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "channel": "C0ASR9CQCBA",
+    "text": "*AI Daily Brief — YYYY-MM-DD* | N stories\n\n*Must Act On:*\n- headline 1\n- headline 2\n- headline 3\n\n*Important to Know:*\n- headline 4\n- headline 5\n\nFull brief uploaded as file above ^^^"
+  }'
+```
+
+Replace YYYY-MM-DD with today's date and fill in actual headlines. If either curl fails, log the error and continue.
 
 ---
 
