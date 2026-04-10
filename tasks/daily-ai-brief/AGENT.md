@@ -82,26 +82,9 @@ Full brief format:
 
 ---
 
-## STEP 5 — Send to Slack (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
+## STEP 5 — Slack delivery (automatic)
 
-**Important:** This runs in a sandboxed environment with NO outbound internet from Bash. Do NOT use curl. You MUST use the Slack MCP connector tools.
-
-### How to find the Slack tools
-
-1. Use `ToolSearch` with query `"slack"` to discover available Slack tools
-2. Then use `ToolSearch` with query `"select:<tool_name>"` to load the schema for each tool you need
-3. The tools may be named `mcp__Slack__slack_*` or `mcp__claude_ai_Slack__slack_*` — check what's available
-
-### Delivery steps
-
-1. Search for the **#ai-news** channel using the `slack_search_channels` tool
-2. Create a Slack Canvas (use `slack_create_canvas`) with the full brief content. Title: "AI Daily Brief — YYYY-MM-DD"
-3. Post a short summary message to #ai-news (use `slack_send_message`) with:
-   - Today's date and story count
-   - Top 2–3 headline titles
-   - The Canvas link so RT can read the full brief in a clean format
-
-If Slack delivery fails, log the error clearly and continue to the next step.
+Slack delivery is handled automatically by a Trigger.dev task that picks up the brief from the repo after you push it. No action needed here — just make sure Step 6 (save to GitHub) completes successfully.
 
 ---
 
