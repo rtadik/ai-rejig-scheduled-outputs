@@ -82,33 +82,26 @@ Full brief format:
 
 ---
 
-## STEP 5 — Deliver the brief via MCP connectors (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
+## STEP 5 — Send to Slack (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
 
-**Important:** This runs in a sandboxed environment with NO outbound internet from Bash. You MUST use MCP connector tools (not curl) to reach external services.
+**Important:** This runs in a sandboxed environment with NO outbound internet from Bash. Do NOT use curl. You MUST use the Slack MCP connector tools.
 
-Use `ToolSearch` to discover available tools. Search for "notion" and "slack" to find the correct tool names, then load them before calling.
+### How to find the Slack tools
 
-### 5a — Notion (primary delivery)
+1. Use `ToolSearch` with query `"slack"` to discover available Slack tools
+2. Then use `ToolSearch` with query `"select:<tool_name>"` to load the schema for each tool you need
+3. The tools may be named `mcp__Slack__slack_*` or `mcp__claude_ai_Slack__slack_*` — check what's available
 
-Create a new page in the **Daily AI Briefs** Notion database with the full brief content.
+### Delivery steps
 
-1. Search Notion for a database called "Daily AI Briefs" (use `notion-search`)
-2. Create a new page in that database (use `notion-create-pages`) with:
-   - Title: "AI Daily Brief — YYYY-MM-DD"
-   - Content: the full brief in markdown
-3. If the database doesn't exist, create it first (use `notion-create-database`)
-
-### 5b — Slack (secondary delivery)
-
-Post a short summary to the **#ai-news** Slack channel with a link to the Notion page.
-
-1. Search for the #ai-news channel (use `slack_search_channels`)
-2. Post a message (use `slack_send_message`) with:
+1. Search for the **#ai-news** channel using the `slack_search_channels` tool
+2. Create a Slack Canvas (use `slack_create_canvas`) with the full brief content. Title: "AI Daily Brief — YYYY-MM-DD"
+3. Post a short summary message to #ai-news (use `slack_send_message`) with:
    - Today's date and story count
-   - Top 2–3 headlines
-   - Link to the Notion page from step 5a
+   - Top 2–3 headline titles
+   - The Canvas link so RT can read the full brief in a clean format
 
-If either delivery method fails, log the error clearly and continue to the next step.
+If Slack delivery fails, log the error clearly and continue to the next step.
 
 ---
 
