@@ -19,7 +19,7 @@ function extractHeadlines(brief: string): string[] {
 
 export const dailyBriefToSlack = schedules.task({
   id: "daily-brief-to-slack",
-  cron: "5 0 * * *", // 00:05 UTC = 07:05 Bangkok
+  cron: "10 0 * * *", // 00:10 UTC = 07:10 Bangkok
   run: async () => {
     const date = todayDate();
     const url = `${REPO_RAW_BASE}/${date}.md`;
