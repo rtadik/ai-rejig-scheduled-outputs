@@ -82,37 +82,33 @@ Full brief format:
 
 ---
 
-## STEP 5 — Send to Slack (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
+## STEP 5 — Deliver the brief via MCP connectors (DO THIS BEFORE ANYTHING ELSE AFTER WRITING)
 
-Post the brief to the **#ai-news** Slack channel using the Slack API via curl.
+**Important:** This runs in a sandboxed environment with NO outbound internet from Bash. You MUST use MCP connector tools (not curl) to reach external services.
 
-Channel ID: `C0ASR9CQCBA`
-The bot token is provided via the `SLACK_BOT_TOKEN` environment variable (set in the trigger prompt).
+Use `ToolSearch` to discover available tools. Search for "notion" and "slack" to find the correct tool names, then load them before calling.
 
-### 5a — Upload the full brief as a file
+### 5a — Notion (primary delivery)
 
-```bash
-curl -s -X POST https://slack.com/api/files.upload \
-  -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-  -F "channels=C0ASR9CQCBA" \
-  -F "title=AI Daily Brief — YYYY-MM-DD" \
-  -F "filename=ai-brief-YYYY-MM-DD.md" \
-  -F "content=$(cat outputs/briefs/YYYY-MM-DD.md)"
-```
+Create a new page in the **Daily AI Briefs** Notion database with the full brief content.
 
-### 5b — Post a summary message
+1. Search Notion for a database called "Daily AI Briefs" (use `notion-search`)
+2. Create a new page in that database (use `notion-create-pages`) with:
+   - Title: "AI Daily Brief — YYYY-MM-DD"
+   - Content: the full brief in markdown
+3. If the database doesn't exist, create it first (use `notion-create-database`)
 
-```bash
-curl -s -X POST https://slack.com/api/chat.postMessage \
-  -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "channel": "C0ASR9CQCBA",
-    "text": "*AI Daily Brief — YYYY-MM-DD* | N stories\n\n*Must Act On:*\n- headline 1\n- headline 2\n- headline 3\n\n*Important to Know:*\n- headline 4\n- headline 5\n\nFull brief uploaded as file above ^^^"
-  }'
-```
+### 5b — Slack (secondary delivery)
 
-Replace YYYY-MM-DD with today's date and fill in actual headlines. If either curl fails, log the error and continue.
+Post a short summary to the **#ai-news** Slack channel with a link to the Notion page.
+
+1. Search for the #ai-news channel (use `slack_search_channels`)
+2. Post a message (use `slack_send_message`) with:
+   - Today's date and story count
+   - Top 2–3 headlines
+   - Link to the Notion page from step 5a
+
+If either delivery method fails, log the error clearly and continue to the next step.
 
 ---
 
