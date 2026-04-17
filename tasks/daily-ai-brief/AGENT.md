@@ -82,13 +82,7 @@ Full brief format:
 
 ---
 
-## STEP 5 — Slack delivery (automatic)
-
-Slack delivery is handled automatically by a Trigger.dev task that picks up the brief from the repo after you push it. No action needed here — just make sure Step 6 (save to GitHub) completes successfully.
-
----
-
-## STEP 6 — Save to GitHub repo
+## STEP 5 — Save to GitHub repo
 
 Save the brief to `outputs/briefs/YYYY-MM-DD.md`
 
@@ -99,6 +93,36 @@ git add outputs/briefs/YYYY-MM-DD.md
 git commit -m "Daily brief: YYYY-MM-DD"
 git push
 ```
+
+After push succeeds, capture the permanent archive URL:
+`https://github.com/rtadik/ai-rejig-scheduled-outputs/blob/main/outputs/briefs/YYYY-MM-DD.md`
+
+---
+
+## STEP 6 — Slack delivery (via Slack MCP connector)
+
+Deliver the brief directly to Slack channel `C0ASR9CQCBA` using the Slack MCP tools available in this session (`mcp__Slack__*`). Do NOT rely on any external Trigger.dev job — delivery is fully owned by this agent.
+
+**Primary path — Canvas + channel notification:**
+
+1. Create a standalone Slack Canvas using `mcp__Slack__slack_create_canvas`:
+   - Title: `AI Daily Brief — YYYY-MM-DD`
+   - Content: the full markdown brief from Step 4 (all stories, both tiers, sources)
+   - Capture the returned canvas URL.
+
+2. Post a short notification message to channel `C0ASR9CQCBA` using `mcp__Slack__slack_send_message`:
+   - First line: `📊 *AI Daily Brief — YYYY-MM-DD* — N stories curated`
+   - Second line: top 2–3 🔴 Must Act On headlines as bullet points (story title only, no detail)
+   - Third line: `📝 Full brief (Canvas): <CANVAS_URL>`
+   - Fourth line: `🗄️ Archive (GitHub): <GITHUB_URL from Step 5>`
+
+**Fallback path — if canvas creation fails:**
+
+If `slack_create_canvas` errors for any reason (plan limits, permissions, tool unavailable), post the full brief as a single Slack message to `C0ASR9CQCBA` using `mcp__Slack__slack_send_message`. Slack message size limit is ~40,000 chars; the brief will fit. Include the GitHub archive URL at the bottom.
+
+**Verification:**
+
+After posting, confirm the message went through (check the tool response for a `ts` / message id). If both Canvas AND fallback message fail, log the failure clearly in your final output so RT can post manually.
 
 ---
 
